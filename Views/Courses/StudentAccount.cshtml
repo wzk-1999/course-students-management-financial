@@ -1,0 +1,50 @@
+﻿@model StudentAccountViewModel
+
+<h2>Accounts Statement</h2>
+<p>Date Changed/Created: @Model.LastChanged</p>
+<p>Student ID: @Model.StudentID</p>
+<p>Name: @Model.FullName</p>
+<p>Fee Policy: @Model.FeePolicy</p>
+<p>Balance: @Model.Balance.ToString("C")</p>
+
+<hr />
+
+<style>
+    th, td {
+        padding-right: 40px;
+        text-align: left;
+    }
+ 
+</style>
+
+<table>
+    <thead>
+        <tr>
+            <th>Description</th>
+            <th>&#9;Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var entry in Model.StatementEntries.Where(e => e.Description != "Tax Rate"))
+        {
+            <tr>
+                <td>@entry.Description</td>
+                <td>&#9;@entry.Value.ToString("C")</td>
+            </tr>
+        }
+
+        <!-- Display the Tax Rate in a specific format -->
+        @if (Model.StatementEntries.Any(e => e.Description == "Tax Rate"))
+        {
+            var taxRateEntry = Model.StatementEntries.First(e => e.Description == "Tax Rate");
+            <tr>
+                <td>Tax (at @taxRateEntry.Value.ToString("0.00")%)</td>
+                <td>&#9;@((Model.Balance * (decimal)taxRateEntry.Value / 100).ToString("C"))</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<hr/>
+
+<p><b>Total Amount Owed: @Model.Balance.ToString("C")</b></p>

@@ -1,0 +1,33 @@
+﻿@model IEnumerable<Zhankui_Wang_Prob_Asst_3_Part_1.Models.Student>
+
+@{
+    ViewData["Title"] = "Student List";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Full Name</th>
+            <th>Full Address</th>
+            <th>Email</th>
+            <th>Type</th>
+            <th>Full Time</th>
+            <th>Program Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var student in Model)
+        {
+            <tr>
+                <td>@student.FullName</td>
+                <td>@student.FullAddress</td>
+                <td>@student.Email</td>
+                <td>@student.Type</td>
+                <td>@(student.IsFullTime ? "Yes" : "No")</td>
+                <td>@student.Program.Name</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,133 @@
+﻿@model IEnumerable<Zhankui_Wang_Prob_Asst_3_Part_1.Models.Course>
+
+@{
+    ViewData["Title"] = "Index";
+    var totalPages = ViewData["TotalPages"] as int?;
+    var currentPage = ViewData["CurrentPage"] as int?;
+}
+
+<div class="container">
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="row">
+                <h1>@ViewData["Title"]</h1>
+            </div>
+            <div class="col-md-6 row">
+                <a asp-action="Create">Create New</a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <form asp-action="Index" method="get" class="form-inline">
+                <div class="form-group row">
+                    <input type="text" name="SearchString" class="form-control" value="@ViewData["CurrentFilter"]" placeholder="Search by Title" />
+                    <!-- Include current sortOrder in hidden field -->
+                    <input type="hidden" name="sortOrder" value="@ViewData["currentSort"]" />
+                </div>
+                <div class="row mt-3">
+                <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+ 
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+               @*  first execute code in controller, then based on variable in controller, change the 
+                code in the view 
+                Initial Load: On the first load, sortOrder is empty, so ViewData["CodeSortParm"] is set to "Code".
+                The link URL becomes /Controller/Index?sortOrder=Code.
+                When the user clicks the link, sortOrder becomes "Code" from the query string. This triggers the ternary logic to set ViewData["CodeSortParm"] to "code_desc" for descending order. 
+                The link URL updates to /Controller/Index?sortOrder=code_desc
+                asp-route-sortOrder= this has quickly changed the value of sortOrder*@
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["CodeSortParm"]" asp-route-SearchString="@ViewData["CurrentFilter"]" asp-route-pageNumber="@currentPage">
+                    @Html.DisplayNameFor(model => model.Code)
+                </a>
+            </th>
+@*                 asp-route-SearchString= this has quickly changed the value of SearchString
+ *@            <th>
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["TitleSortParm"]" asp-route-SearchString="@ViewData["CurrentFilter"]" asp-route-pageNumber="@currentPage">
+                    @Html.DisplayNameFor(model => model.Title)
+                </a>
+            </th>
+            <th>
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["SectionSortParm"]" asp-route-SearchString="@ViewData["CurrentFilter"]" asp-route-pageNumber="@currentPage">
+                    @Html.DisplayNameFor(model => model.Section)
+                </a>
+            </th>
+            <th>
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["TermSortParm"]" asp-route-SearchString="@ViewData["CurrentFilter"]" asp-route-pageNumber="@currentPage">
+                    @Html.DisplayNameFor(model => model.Term)
+                </a>
+            </th>
+            <th>
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["YearSortParm"]" asp-route-SearchString="@ViewData["CurrentFilter"]" asp-route-pageNumber="@currentPage">
+                    @Html.DisplayNameFor(model => model.Year)
+                </a>
+            </th>
+                <th>
+                    <a asp-action="Index" asp-route-SearchString="@ViewData["CurrentFilter"]" asp-route-pageNumber="@currentPage">
+                        @Html.DisplayNameFor(model => model.IsOpenToEnroll)
+                    </a>
+                </th>
+            <th>
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["ProgramSortParm"]" asp-route-SearchString="@ViewData["CurrentFilter"]" asp-route-pageNumber="@currentPage">
+                    Program Name
+                </a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Section)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Term)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Year)
+            </td>
+            <td>
+                @(item.IsOpenToEnroll?"Yes":"No")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Program.Name)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Course" asp-route-id="@item.Id">Manage</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+    <div class="row  justify-content-center">
+        <div class="col-md-1">
+            @if (currentPage > 1)
+            {
+                <a class="btn btn-primary" asp-action="Index" asp-route-pageNumber="@(currentPage - 1)" asp-route-searchString="@ViewData["CurrentFilter"]" asp-route-sortOrder="@ViewData["CurrentSort"]">Previous</a>
+            }
+        </div>
+        <div class="col-md-1 text-center">@currentPage/@ViewData["TotalPages"]</div>
+        <div class="col-md-1">
+            @if (currentPage < totalPages)
+            {
+                <a class="btn btn-primary" asp-action="Index" asp-route-pageNumber="@(currentPage + 1)" asp-route-searchString="@ViewData["CurrentFilter"]" asp-route-sortOrder="@ViewData["CurrentSort"]">Next</a>
+            }
+        </div>
+    </div>
+</div>

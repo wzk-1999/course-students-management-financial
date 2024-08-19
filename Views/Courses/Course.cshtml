@@ -1,0 +1,69 @@
+﻿@model CourseViewModel
+
+<h1>@Model.CourseTitle</h1>
+
+<h2>Enrolled Students</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Full Name</th>
+            <th>Full Address</th>
+            <th>Email</th>
+            <th>Type</th>
+            <th>Is Full-Time</th>
+            <th>Actions</th>
+            <th>Account</th>
+            <th>Total Amount Owed</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var student in Model.EnrolledStudents)
+        {
+            <tr>
+                <td>@student.FullName</td>
+                <td>@student.FullAddress</td>
+                <td>@student.Email</td>
+                <td>@student.Type</td>
+                <td>@(student.IsFullTime?"Yes":"No")</td>
+                <td>
+                    <a href="#" onclick="confirmDrop('@Model.CourseTitle',@Model.Section, '@Model.Term', @Model.Year, '@student.StudentID')">Drop</a>
+                </td>
+                <td>
+                    <a asp-action="StudentAccount" asp-route-studentId="@student.StudentID">Account</a>
+                </td>
+                <td>
+                    @student.Balance.ToString("C")
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (Model.IsOpenToEnroll)
+{
+    <h3>Enroll Student</h3>
+    <form asp-action="EnrollStudent" method="post">
+        <input type="hidden" asp-for="CourseId" />
+        <div class="form-group">
+            <label asp-for="SelectedStudentId">Select Student</label>
+            <select asp-for="SelectedStudentId" class="form-control" asp-items="Model.EligibleStudents" required>
+                <option value="" disabled selected hidden>Select Eligible Student</option>
+            </select>
+        </div>
+        <div class="form-group mt-5">
+            <button type="submit" class="btn btn-primary">Enroll Student</button>
+        </div>
+    </form>
+}
+else
+{
+    <p>Course is closed, and is not accepting new students.</p>
+}
+
+<script type="text/javascript">
+    function confirmDrop(courseTitle, section, term, year, studentId) {
+        if (confirm(`Do you want to drop ${courseTitle} \nSection:${section}, ${term}, ${year}?`)) {
+            window.location.href = '@Url.Action("DropStudent", "Courses")' + '?courseId=@Model.CourseId&studentId=' + studentId;
+        }
+    }
+</script>
